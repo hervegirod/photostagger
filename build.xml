@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="photostagger" default="default" basedir=".">
+    <description>Builds, tests, and runs the project photostagger.</description>
+    <import file="nbproject/build-impl.xml"/>
+  <!-- =================================================================== -->
+   <!-- post NB init                                                          -->
+   <!-- =================================================================== -->
+
+   <target name="-post-init">
+      <!-- general properties definition -->
+      <property name="jdk" value="C:\Program Files\Java\jdk-1.8"/>   
+      <property name="javadocEXE" value="${jdk}/bin/javadoc.exe"/>
+      <property name="archiveName" value="photosTagger"/>
+      <property name="src.project.dir" value="${src.dir}/.."/>
+   </target>
+
+   <!-- =================================================================== -->
+   <!-- Non NB targets                                                          -->
+   <!-- =================================================================== -->
+
+   <target description="fetch version" depends="-init-project, -post-init" name="version">
+      <loadproperties srcFile="${src.dir}/org/girod/photostagger/resources/photostagger.properties">
+         <filterchain>
+            <linecontains>
+               <contains value="version"/>
+            </linecontains>
+         </filterchain>
+      </loadproperties>
+   </target>
+
+   <!-- =================================================================== -->
+   <!-- zip files                                                          -->
+   <!-- =================================================================== -->
+
+   <target depends="version, -post-init" description="create zip files" name="zip">
+      <!-- zip source files -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-src-${version}.zip">
+         <fileset description="core source directory" dir="${src.project.dir}/..">
+            <include name="src/**/*.java"/>
+            <include name="src/**/*.properties"/>
+            <include name="src/**/*.mf"/>
+            <include name="src/**/*.html"/>
+         </fileset>
+         <fileset description="docs" dir=".">
+            <include name="UserProperties.properties"/>
+            <include name="README.md"/>
+            <include name="LICENSE"/>
+            <include name="build.xml"/>
+            <include name="properties.properties"/>
+         </fileset>
+         <fileset description="netbeans project files" dir=".">
+            <include name="nbproject/*.*"/>
+         </fileset>
+      </zip>
+      <!-- zip binary files -->
+      <zip compress="true" defaultexcludes="true"  zipfile="${dist.dir}/${archiveName}-bin-${version}.zip">
+         <fileset description="docs" dir=".">
+            <include name="UserProperties.properties"/>
+            <include name="README.md"/>
+            <include name="LICENSE"/>
+            <include name="properties.properties"/>
+         </fileset>
+         <fileset description="binaries" dir="${dist.dir}">
+            <include name="photoTagger.jar"/>
+         </fileset>
+      </zip>
+   </target>   
+
+   <!-- =================================================================== -->
+   <!-- NB overwrite targets : jar                                     -->
+   <!-- =================================================================== -->
+
+   <target depends="init,compile,-pre-jar,-do-jar-without-manifest,-post-jar" description="Build JAR." name="jar"/>
+
+   <target name="-do-jar-without-manifest" depends="init,compile,-pre-pre-jar,-pre-jar" >
+      <!-- Core jar construction -->
+      <jar description="core jar binary file" compress="true" jarfile="${dist.jar}" manifest="${src.dir}/manifest.mf">
+         <fileset defaultexcludes="true" dir="${build.classes.dir}">
+            <include name="org/**/*.class"/>
+            <include name="org/**/*.properties"/>
+         </fileset>
+      </jar>
+   </target>
+   
+</project>

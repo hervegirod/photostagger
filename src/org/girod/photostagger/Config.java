@@ -1,6 +1,5 @@
-BSD 3-Clause License
-
-Copyright (c) 2021, Hervé Girod
+/*
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,3 +26,49 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Alternatively if you have any questions about this project, you can visit
+the project website at the project page on https://github.com/hervegirod/photostagger
+ */
+package org.girod.photostagger;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.PropertyResourceBundle;
+
+/**
+ *
+ * @since 0.1
+ */
+public class Config {
+   private static Config config = null;
+   private int firstIndex = 1;
+   private String pattern = "file";
+   
+   private Config() {
+      File dir = new File(System.getProperty("user.dir"));
+      File propertiesFile = new File(dir, "properties.properties");
+      try {
+         PropertyResourceBundle prb = new PropertyResourceBundle(new FileReader(propertiesFile));
+         firstIndex = Integer.parseInt(prb.getString("start"));
+         pattern = prb.getString("pattern");
+      } catch (Exception ex) {
+         System.err.println(ex.getMessage());
+      }
+   }
+   
+   public int getFirstIndex()  {
+      return firstIndex;
+   }   
+   
+   public String getPattern()  {
+      return pattern;
+   }
+   
+   public static Config getInstance() {
+      if (config == null) {
+         config = new Config();
+      }
+      return config;
+   }
+}
